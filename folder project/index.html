@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music ni anika</title>
+    <link rel="stylesheet" href="style.css">
+     <script src="https://kit.fontawesome.com/c1e69e23cb.js" crossorigin="anonymous"></script>
+
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <input type="text" class="search" placeholder="What do you want to play?" />
+    
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <!-- LEFT -->
+    <div class="panel">
+        <h2>My Library</h2>
+
+        <!-- ben&ben -->
+        <div class="song" data-playlist="bben">
+            <img src="assets/image/ben&ben/ben n ben.jpg">
+            <div class="song-info">
+                <h3>Ben&Ben</h3>
+                <p>playlist</p>
+            </div>
+            <span class="heart" id="heart1">&#10084;</span>
+        </div>
+
+        <!-- fitterkarma -->
+         <div class="song" data-playlist="ft">
+            <img src="assets/image/fitterkarma/fitterkarma.jpg">
+            <div class="song-info">
+                <h3>Fitterkarma</h3>
+                <p>playlist</p>
+            </div>
+            <span class="heart" id="heart2">&#10084;</span>
+        </div>
+        
+        <!-- al james -->
+        <div class="song" data-playlist="aljames">
+            <img src="assets/image/al-james/al-james.jpg">
+            <div class="song-info">
+                <h3>Al James</h3>
+                <p>playlist</p>
+            </div>
+            <span class="heart" id="heart3">&#10084;</span>
+        </div>
+
+        <!-- jan robert s. -->
+        <div class="song" data-playlist="janroberts">
+            <img src="assets/image/janroberts/jan-roberts.jpg">
+            <div class="song-info">
+                <h3>Jan Robert S.</h3>
+                <p>playlist</p>
+            </div>
+            <span class="heart" id="heart4">&#10084;</span>
+        </div>
+
+    </div>
+
+    <!-- CENTER PLAYER -->
+    <div class="panel player">
+
+        <img src="assets/image/fitterkarma/Kalapastangan.jpg" class="album" alt="Album art">
+
+        <h1>kapatagan</h1>
+        <p>fitter karma</p>
+
+        <div class="controls">
+            <div class="prev" id="prevbutton">⏮</div>
+            <div class="play" id="playBtn">▶</div>
+            <div class="next" id="nextbutton">⏭</div>
+        </div>
+
+        
+       <div class="progress-container">
+
+            <div class="time">
+                <span class="current">0:00</span>
+                <span class="duration">0:00</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+
+            <div class="volume-control">
+                <input id="volumeSlider" type="range" min="0" max="100" value="100">
+                <div class="vol-value" id="volumeValue">100%</div>
+            </div>
+
+       </div>
+       
+
+        <audio id="audio">
+            <source src="songs/fitterkarma/kalapastangan.mp3" type="audio/mp3">
+        </audio>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="right-section">
+
+        <div class="small-panel">
+            <button id="resetRecent" class="reset-btn" title="Clear recently played">Reset</button>
+            <h2>Recently</h2>
+            <div class="recent-list">
+                <p class="recent-empty">No recently played songs. Play music to see it here.</p>
+            </div>
+        </div>
+
+        <div class="small-panel">
+            <h2>Favorites</h2>
+            <div class="favorites-list">
+                <p class="favorites-empty">No favorites yet. Click a heart to add songs.</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- Playlist Modal -->
+<div id="playlist-modal" class="modal hidden">
+    <div class="modal-content">
+        <button id="close-playlist" class="close-btn">✕</button>
+        <h2 id="playlist-title">Playlist</h2>
+        <div class="playlist-items"></div>
+    </div>
+</div>
+
+
+
+<script src="javashit.js"></script>
+</body>
+
+
+
+</html>
