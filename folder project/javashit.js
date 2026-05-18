@@ -185,9 +185,9 @@ async function playRecentSong(recent) {
     const src = recent.dataset.src;
     if (!src) return;
 
-    // ✅ Set directly on audio, no encodeURI
+    
     audio.src = src;
-    audio.dataset.currentSrc = src; // save for addRecentSong
+    audio.dataset.currentSrc = src; 
     audio.load();
 
     try {

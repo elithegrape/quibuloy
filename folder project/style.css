@@ -148,7 +148,7 @@ h2 {
 }
 .vol-value { min-width: 42px; text-align: center; color: #ddd; font-weight: 700; }
 
-/* Slider styles */
+/* Slider styles */ 
 .volume-control input[type="range"] {
     width: 180px;
     -webkit-appearance: none;
