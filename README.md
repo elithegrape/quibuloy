@@ -44,3 +44,5 @@
   - **Shuffle and repeat as stateful toggles**
   Both buttons highlight in purple when active, giving a persistent visual indicator of the current playback mode — critical for avoiding user confusion about why   tracks are playing in unexpected orders.
 
+design documentation:
+
