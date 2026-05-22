@@ -746,3 +746,110 @@ body {
 .panel {
     min-height: 0; /* ADDED: important so flex children can shrink inside grid */
 }
+
+/* ============================================================
+   GENRE MODAL - Two-panel layout
+   ============================================================ */
+
+/* Override modal-content for genre to be taller and better sized */
+.genre-modal-content {
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+.genre-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid #222;
+    flex-shrink: 0;
+}
+
+.genre-modal-header h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 18px;
+}
+
+.genre-back-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+.genre-back-btn:hover { background: #1e1e1e; color: #fff; }
+.genre-back-btn.hidden { display: none; }
+
+/* Genre cards grid view */
+.genre-cards-view,
+.genre-tracks-view {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+}
+.genre-tracks-view.hidden,
+.genre-cards-view.hidden { display: none; }
+
+.genre-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.genre-card {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.genre-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.genre-card-art {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35;
+}
+
+.genre-card-info {
+    position: relative;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.genre-card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.genre-card-count {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+}
+
+/* Track list inside genre */
+.genre-track-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
