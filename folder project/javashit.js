@@ -516,7 +516,7 @@ const playlists = {
             title: 'Isang pangako', 
             artist: 'Fitterkarma', 
             src: 'assets/songs/fitterkarma/pangako.mp3', 
-            image: 'assets/image/fitterkarma/pangako.jpg',
+            image: 'assets/image/fitterkarma/isang pangako.jpg',
             album: 'Pangako',
             genre: 'OPM'
         }
