@@ -787,3 +787,16 @@ body {
     flex-direction: column;
     gap: 6px;
 }
+
+/* Heart visibility in song list */
+.all-songs-list .song .heart {
+    opacity: 0;
+    transition: opacity 0.2s, color 0.3s, transform 0.3s;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.all-songs-list .song:hover .heart,
+.all-songs-list .song .heart.active {
+    opacity: 1;
+}
