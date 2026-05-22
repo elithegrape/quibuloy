@@ -329,6 +329,18 @@ playBtn.addEventListener("click", () => {
     }
 });
 
+// REPEAT BUTTON TOGGLE
+const repeatBtn = document.getElementById('repeatBtn');
+repeatBtn?.addEventListener('click', () => {
+    repeatBtn.classList.toggle('bp-icon-active');
+});
+
+// SHUFFLE BUTTON TOGGLE
+const shuffleBtn = document.getElementById('shuffleBtn');
+shuffleBtn?.addEventListener('click', () => {
+    shuffleBtn.classList.toggle('bp-icon-active');
+});
+
 // VOLUME CONTROLS
 const volumeSlider = document.getElementById('volumeSlider');
 const volValue = document.getElementById('volumeValue');
@@ -516,7 +528,7 @@ const playlists = {
             title: 'Isang pangako', 
             artist: 'Fitterkarma', 
             src: 'assets/songs/fitterkarma/pangako.mp3', 
-            image: 'assets/image/fitterkarma/isang pangako.jpg',
+            image: 'assets/image/fitterkarma/pangako.jpg',
             album: 'Pangako',
             genre: 'OPM'
         }
@@ -802,25 +814,7 @@ nextbtn?.addEventListener('click', () => {
 updateFavoritesPlaceholder();
 updateRecentPlaceholder();
 
-// Load first track on page load without autoplaying (browsers block autoplay anyway)
+// Start with first track if available
 if (allTracks.length > 0) {
-    const track = allTracks[0];
-    audio.src = track.src;
-    audio.dataset.currentSrc = track.src;
-    audio.load();
-    playerTitle.textContent = track.title;
-    playerArtist.textContent = track.artist;
-    playerImage.src = track.image;
-    bpTitle.textContent = track.title;
-    bpArtist.textContent = track.artist;
-    bpThumb.src = track.image;
-    centerTitle.textContent = track.title;
-    centerArtist.textContent = track.artist;
-    centerAlbum.textContent = track.album;
-    centerGenre.textContent = track.genre;
-    // Keep play icon (not pause) since nothing is playing yet
-    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-    playing = false;
-    currentPlaylist = allTracks;
-    currentTrackIndex = 0;
+    playTrack(allTracks, 0);
 }
