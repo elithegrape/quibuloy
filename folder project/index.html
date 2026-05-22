@@ -32,7 +32,7 @@
 
         <!-- FILTER TABS (FIXED: now actually filters) -->
         <div class="filter-tabs">
-            <button class="filter-btn active" data-filter="all">Title</button>
+            <button class="filter-btn active" data-filter="all">Songs</button>
             <button class="filter-btn" data-filter="playlists">Playlists</button>
             <button class="filter-btn" data-filter="genre">Genre</button>
         </div>
@@ -74,6 +74,9 @@
         <div class="filter-message" style="display:none; text-align:center; color:#ccc; padding:20px;">
             No items to show for this filter.
         </div>
+
+        <!-- All songs list (shown when Songs tab is active) -->
+        <div class="all-songs-list"></div>
 
         <!-- Search results appear here -->
         <div class="search-results"></div>
@@ -218,21 +221,26 @@
     const libraryItems = document.querySelectorAll('.left-sidebar .song[data-type="playlist"]');
     const filterMessage = document.querySelector('.left-sidebar .filter-message');
 
+    const allSongsList = document.querySelector('.all-songs-list');
+
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Remove 'active' from all buttons
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             const filter = btn.dataset.filter;
 
-            if (filter === 'all' || filter === 'playlists') {
-                // Show all playlist items
+            if (filter === 'all') {
+                libraryItems.forEach(item => item.style.display = 'none');
+                if (allSongsList) allSongsList.style.display = '';
+                filterMessage.style.display = 'none';
+            } else if (filter === 'playlists') {
                 libraryItems.forEach(item => item.style.display = '');
+                if (allSongsList) allSongsList.style.display = 'none';
                 filterMessage.style.display = 'none';
             } else {
-                // Hide all playlist items for other filters
                 libraryItems.forEach(item => item.style.display = 'none');
+                if (allSongsList) allSongsList.style.display = 'none';
                 filterMessage.style.display = 'block';
             }
         });
