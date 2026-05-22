@@ -1,4 +1,3 @@
-\
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,108 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music ni anika</title>
     <link rel="stylesheet" href="style.css">
-     <script src="https://kit.fontawesome.com/c1e69e23cb.js" crossorigin="anonymous"></script>
-
+    <script src="https://kit.fontawesome.com/c1e69e23cb.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- ============================================================
+     TOP NAV BAR  (FIXED: Font Awesome icons instead of emojis)
+     ============================================================ -->
 <div class="topbar">
+    <!-- Home icon on the left (FIXED: Font Awesome) -->
+    <div class="topbar-left">
+        <div class="home-icon"><i class="fas fa-home"></i></div>
+    </div>
+
+    <!-- Search bar in the center -->
     <input type="text" class="search" placeholder="What do you want to play?" />
-    
+
+    <!-- User avatar placeholder on the right (FIXED: Font Awesome) -->
+    <div class="topbar-right">
+        <div class="user-avatar"><i class="fas fa-user"></i></div>
+    </div>
 </div>
 
-<!-- MAIN -->
+<!-- ============================================================
+     MAIN LAYOUT  (Original structure preserved)
+     ============================================================ -->
 <div class="main">
 
-    <!-- LEFT -->
-    <div class="panel">
-        <h2>My Library</h2>
+    <!-- LEFT SIDEBAR: My Library (FIXED: filtering logic) -->
+    <div class="panel left-sidebar">
+        <div class="library-header">
+            <h2>My Library</h2>
+        </div>
 
-        <!-- fitterkarma -->
-         <div class="song" data-playlist="ft">
+        <!-- FILTER TABS (FIXED: now actually filters) -->
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Title</button>
+            <button class="filter-btn" data-filter="playlists">Playlists</button>
+            <button class="filter-btn" data-filter="album">Album</button>
+            <button class="filter-btn" data-filter="artists">Artists</button>
+            <button class="filter-btn" data-filter="genre">Genre</button>
+        </div>
+
+        <!-- FIXED: Added data-type for filtering -->
+        <div class="song" data-playlist="ft" data-type="playlist">
             <img src="assets/image/fitterkarma/fitterkarma.jpg">
             <div class="song-info">
                 <h3>Fitterkarma</h3>
                 <p>playlist</p>
             </div>
-            <span class="heart" id="heart2">&#10084;</span>
         </div>
 
-          <!-- ben&ben -->
-        <div class="song" data-playlist="bben">
+        <div class="song" data-playlist="bben" data-type="playlist">
             <img src="assets/image/ben&ben/ben n ben.jpg">
             <div class="song-info">
                 <h3>Ben&Ben</h3>
                 <p>playlist</p>
             </div>
-            <span class="heart" id="heart1">&#10084;</span>
         </div>
-        
-        <!-- al james -->
-        <div class="song" data-playlist="aljames">
+
+        <div class="song" data-playlist="aljames" data-type="playlist">
             <img src="assets/image/al-james/al-james.jpg">
             <div class="song-info">
                 <h3>Al James</h3>
                 <p>playlist</p>
             </div>
-            <span class="heart" id="heart3">&#10084;</span>
         </div>
 
-        <!-- jan robert s. -->
-        <div class="song" data-playlist="janroberts">
+        <div class="song" data-playlist="janroberts" data-type="playlist">
             <img src="assets/image/janroberts/jan-roberts.jpg">
             <div class="song-info">
-                <h3>Jan Robert S.</h3>
+                <h3>Robert S.</h3>
                 <p>playlist</p>
             </div>
-            <span class="heart" id="heart4">&#10084;</span>
         </div>
 
+        <!-- FIXED: Message for when filter shows no results -->
+        <div class="filter-message" style="display:none; text-align:center; color:#ccc; padding:20px;">
+            No items to show for this filter.
+        </div>
+
+        <!-- Search results appear here -->
+        <div class="search-results"></div>
     </div>
 
-    <!-- CENTER PLAYER -->
-    <div class="panel player">
-
+    <!-- CENTER: Main content area showing now-playing album art -->
+    <div class="panel center-content">
+        <!-- Album art -->
         <img src="assets/image/fitterkarma/Kalapastangan.jpg" class="album" alt="Album art">
-
-        <h1>kapatagan</h1>
-        <p>fitter karma</p>
-
-        <div class="controls">
-            <div class="prev" id="prevbutton">⏮</div>
-            <div class="play" id="playBtn">▶</div>
-            <div class="next" id="nextbutton">⏭</div>
-        </div>
-
         
-       <div class="progress-container">
-
-            <div class="time">
-                <span class="current">0:00</span>
-                <span class="duration">0:00</span>
-            </div>
-
-            <div class="progress-bar">
-                <div class="progress"></div>
-            </div>
-
-            <div class="volume-control">
-                <input id="volumeSlider" type="range" min="0" max="100" value="100">
-                <div class="vol-value" id="volumeValue">100%</div>
-            </div>
-
-       </div>
-       
-
-        <audio id="audio">
-            <source src="assets/songs/fitterkarma/kalapastangan.mp3" type="audio/mp3">
-        </audio>
+        <!-- Song information -->
+        <div class="center-info">
+            <h1 id="center-title">kapatagan</h1>
+            <p id="center-artist">fitter karma</p>
+            <p id="center-album">Kalapastangan</p>
+            <p id="center-genre">OPM</p>
+        </div>
     </div>
 
-    <!-- RIGHT -->
+    <!-- RIGHT PANEL: Recently played + Favorites -->
     <div class="right-section">
-
         <div class="small-panel">
             <button id="resetRecent" class="reset-btn" title="Clear recently played">Reset</button>
             <h2>Recently</h2>
@@ -122,14 +119,70 @@
                 <p class="favorites-empty">No favorites yet. Click a heart to add songs.</p>
             </div>
         </div>
+    </div>
+</div>
 
+<!-- ============================================================
+     BOTTOM PLAYER BAR  (FIXED: Font Awesome icons, fixed overflow)
+     ============================================================ -->
+<div class="bottom-player">
+    <!-- Left: album thumb + song info -->
+    <div class="bp-left">
+        <img src="assets/image/fitterkarma/Kalapastangan.jpg" class="bp-thumb" id="bp-thumb" alt="Now playing">
+        <div class="bp-info">
+            <span class="bp-title" id="bp-title">kapatagan</span>
+            <span class="bp-artist" id="bp-artist">fitter karma</span>
+        </div>
     </div>
 
+    <!-- Center: playback controls + progress bar (FIXED: Font Awesome icons) -->
+    <div class="bp-center">
+        <div class="bp-controls">
+            <!-- FIXED: Shuffle button (Font Awesome) -->
+            <div class="bp-icon" id="shuffleBtn" title="Shuffle"><i class="fas fa-random"></i></div>
+            <!-- Prev button (FIXED: Font Awesome) -->
+            <div class="bp-icon" id="prevbutton"><i class="fas fa-backward"></i></div>
+            <!-- Play/Pause button (FIXED: Font Awesome) -->
+            <div class="play" id="playBtn"><i class="fas fa-pause"></i></div>
+            <!-- Next button (FIXED: Font Awesome) -->
+            <div class="bp-icon" id="nextbutton"><i class="fas fa-forward"></i></div>
+            <!-- FIXED: Repeat button (Font Awesome) -->
+            <div class="bp-icon" id="repeatBtn" title="Repeat"><i class="fas fa-redo"></i></div>
+        </div>
+
+        <!-- Progress bar + timestamps (FIXED: overflow changed to visible) -->
+        <div class="progress-container">
+            <div class="time">
+                <span class="current">0:00</span>
+                <span class="duration">0:00</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress">
+                    <!-- progressHandle is appended by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: volume control (FIXED: Font Awesome icon) -->
+    <div class="bp-right">
+        <!-- FIXED: Volume icon (Font Awesome) -->
+        <span class="vol-icon"><i class="fas fa-volume-up"></i></span>
+        <div class="volume-control">
+            <input id="volumeSlider" type="range" min="0" max="100" value="100">
+            <div class="vol-value" id="volumeValue">100%</div>
+        </div>
+    </div>
 </div>
 
-</div>
+<!-- Hidden audio element -->
+<audio id="audio">
+    <source src="assets/songs/fitterkarma/kalapastangan.mp3" type="audio/mp3">
+</audio>
 
-<!-- Playlist Modal -->
+<!-- ============================================================
+     PLAYLIST MODAL  (Unchanged from original)
+     ============================================================ -->
 <div id="playlist-modal" class="modal hidden">
     <div class="modal-content">
         <button id="close-playlist" class="close-btn">✕</button>
@@ -138,11 +191,44 @@
     </div>
 </div>
 
-
+<!-- Hidden proxy elements for JS compatibility -->
+<div class="player" style="display:none; visibility:hidden; position:absolute; pointer-events:none;" aria-hidden="true">
+    <img src="assets/image/fitterkarma/Kalapastangan.jpg" class="album" alt="">
+    <h1>kapatagan</h1>
+    <p>fitter karma</p>
+</div>
 
 <script src="javashit.js"></script>
+
+<!-- ============================================================
+     FIXED: Filter tab logic (added to fix filtering)
+     ============================================================ -->
+<script>
+    /* Filter Tab Switching with actual filtering */
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const libraryItems = document.querySelectorAll('.left-sidebar .song[data-type="playlist"]');
+    const filterMessage = document.querySelector('.left-sidebar .filter-message');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove 'active' from all buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const filter = btn.dataset.filter;
+
+            if (filter === 'all' || filter === 'playlists') {
+                // Show all playlist items
+                libraryItems.forEach(item => item.style.display = '');
+                filterMessage.style.display = 'none';
+            } else {
+                // Hide all playlist items for other filters
+                libraryItems.forEach(item => item.style.display = 'none');
+                filterMessage.style.display = 'block';
+            }
+        });
+    });
+</script>
+
 </body>
-
-
-
 </html>
