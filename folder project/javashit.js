@@ -540,7 +540,7 @@ const playlists = {
             src: 'assets/songs/aljames/ngayon gabi.mp3', 
             image: 'assets/image/al-james/ngayon-gabi.jpg',
             album: 'Ngayong Gabi',
-            genre: 'OPM'
+            genre: 'rock rap'
         },
         { 
             title: 'pa umaga', 
