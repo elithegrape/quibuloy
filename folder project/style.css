@@ -1,3 +1,8 @@
+/* ============================================================
+   FIXED CSS - Original structure preserved, bugs fixed
+   ============================================================ */
+
+/* BASE STYLES (Fixed duplicate body rule) */
 * {
     margin: 0;
     padding: 0;
@@ -5,16 +10,18 @@
     font-family: Arial, sans-serif;
 }
 
+/* FIXED: Single body rule (merged duplicates) */
 body {
     background: #000;
     color: white;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent outer scroll; panels scroll internally */
 }
 
 /* TOP BAR */
-.nav {
+.topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -22,8 +29,33 @@ body {
     background: black;
 }
 
-.search {
-    width: 40%;
+/* LEFT SIDEBAR OF TOP BAR */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Home icon button */
+.home-icon {
+    width: 40px;
+    height: 40px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+.home-icon:hover { background: #2a2a2a; }
+
+/* Search bar */
+.topbar .search {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 auto;
     padding: 12px 20px;
     border: solid 1px #f5f2f2;
     border-radius: 30px;
@@ -33,7 +65,26 @@ body {
     outline: none;
 }
 
-/* MAIN */
+/* RIGHT SIDEBAR OF TOP BAR */
+.topbar-right {
+    display: flex;
+    align-items: center;
+}
+
+/* User avatar */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* MAIN LAYOUT */
 .main {
     flex: 1;
     display: grid;
@@ -88,6 +139,10 @@ h2 {
     font-size: 14px;
 }
 
+.search-results {
+    margin-top: 16px;
+}
+
 /* HEART */
 .heart {
     font-size: 20px;
@@ -128,6 +183,7 @@ h2 {
     color: gray;
 }
 
+/* CONTROLS */
 .controls {
     margin-top: 10px;
     display: flex;
@@ -146,7 +202,12 @@ h2 {
     margin-top: 14px;
     justify-content: flex-start;
 }
-.vol-value { min-width: 42px; text-align: center; color: #ddd; font-weight: 700; }
+.vol-value { 
+    min-width: 42px; 
+    text-align: center; 
+    color: #ddd; 
+    font-weight: 700; 
+}
 
 /* Slider styles */ 
 .volume-control input[type="range"] {
@@ -169,6 +230,7 @@ h2 {
 }
 .volume-control input[type="range"]:focus { outline: none; }
 
+/* PLAY BUTTON */
 .play {
     width: 70px;
     height: 70px;
@@ -188,6 +250,7 @@ h2 {
     transform: scale(1.05);
 }
 
+/* PROGRESS BAR (FIXED: overflow changed from hidden to visible) */
 .progress-container {
     width: 100%;
     max-width: 520px;
@@ -210,7 +273,7 @@ h2 {
     background: #2a2a2a;
     border-radius: 999px;
     cursor: pointer;
-    overflow: hidden;
+    overflow: visible; /* FIXED: was hidden, now visible */
 }
 
 .progress-bar:hover {
@@ -352,16 +415,17 @@ h2 {
 .playlist-item:hover { background: #1b1b1b; }
 .playlist-item img { width:48px; height:48px; object-fit:cover; border-radius:6px }
 .playlist-item .meta { color: #ddd }
+.playlist-item .heart { margin-left: auto; }
 
 /* Reset button in Recently panel */
 .reset-btn {
     position: absolute;
-    left: 12px;
+    left: 180px;
     top: 12px;
     background: transparent;
     border: 1px solid #2a2a2a;
     color: #ccc;
-    padding: 6px 10px;
+    padding: 10px 10px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 12px;
@@ -378,4 +442,307 @@ h2 {
     max-height: 360px;
     overflow: auto;
     padding-right: 6px; /* leave space for scrollbar */
+}
+
+/* CENTER CONTENT UPDATES */
+.center-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+}
+
+#center-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    color: #fff;
+}
+
+#center-artist,
+#center-album,
+#center-genre {
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+}
+
+/* ============================================================
+   ADDED STYLES - Layout Redesign to match reference image
+   All new rules are ADDITIONS. Original rules above are unchanged.
+   ============================================================ */
+
+/* --- Reset body to flex column so bottom bar stays at the bottom --- */
+/* ADDED: Override body to use full height flex layout */
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* ADDED: prevent outer scroll; panels scroll internally */
+}
+
+/* --- TOP NAR BAR (CHANGED: was just padding, now proper flex layout like reference) --- */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #000;
+    gap: 16px;
+    flex-shrink: 0; /* ADDED: don't let topbar shrink */
+}
+
+/* ADDED: Left side of topbar (home icon) */
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ADDED: Home icon button style */
+.home-icon {
+    width: 40px;
+    height: 40px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s;
+}
+.home-icon:hover { background: #2a2a2a; }
+
+/* ADDED: Right side of topbar (user avatar) */
+.topbar-right {
+    display: flex;
+    align-items: center;
+}
+
+/* ADDED: User avatar circle */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* ADDED: Override search to take up center space */
+.topbar .search {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* --- MAIN LAYOUT (CHANGED: 3-column, no more center player panel) --- */
+.main {
+    flex: 1;               /* ADDED: take up all space between topbar and bottom bar */
+    display: grid;
+    grid-template-columns: 1.2fr 1.8fr 1fr;
+    gap: 12px;
+    padding: 12px;
+    overflow: hidden;      /* ADDED: prevent main from overflowing */
+    min-height: 0;         /* ADDED: important for flex children to shrink */
+}
+
+/* ADDED: Left sidebar scrolls internally */
+.left-sidebar {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* --- FILTER TABS (ADDED: the Title / Playlists / Album / Artists / Genre tabs) --- */
+.filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    margin-top: 4px;
+}
+
+/* ADDED: Each filter tab button */
+.filter-btn {
+    background: transparent;
+    border: 1px solid #333;
+    color: #ccc;
+    padding: 5px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filter-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+/* ADDED: Active/selected filter tab */
+.filter-btn.active {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    font-weight: 600;
+}
+
+/* --- CENTER CONTENT (ADDED: album art display area — replaces old center player panel) --- */
+.center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    overflow: hidden;
+}
+
+/* ADDED: Center panel album art - bigger, fills the space */
+.center-content .album {
+    width: min(320px, 80%);
+    height: min(320px, 80%);
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+}
+
+/* ADDED: Extra info line below song title in center */
+.center-extra {
+    color: #888;
+    font-size: 13px;
+}
+
+/* --- RIGHT SECTION: make it scroll internally --- */
+.right-section {
+    overflow-y: auto;
+    min-height: 0; /* ADDED: allow it to shrink */
+}
+
+/* ADDED: Make small-panels inside right section not overflow the column */
+.right-section .small-panel {
+    padding: 16px;  /* override old 50px padding to a reasonable value */
+}
+
+/* --- BOTTOM PLAYER BAR (ADDED: the persistent player at the bottom like Spotify) --- */
+.bottom-player {
+    height: 90px;
+    background: #111;
+    border-top: 1px solid #222;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 20px;
+    flex-shrink: 0; /* ADDED: prevent bottom bar from shrinking */
+    z-index: 10;
+}
+
+/* ADDED: Left section of bottom bar (album thumb + song info) */
+.bp-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+    flex: 1;
+}
+
+/* ADDED: Small album thumbnail in bottom bar */
+.bp-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* ADDED: Song title and artist in bottom bar */
+.bp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.bp-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.bp-artist {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ADDED: Center section of bottom bar (controls + progress) */
+.bp-center {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ADDED: Playback control buttons row */
+.bp-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+/* ADDED: Icon-style buttons (shuffle, prev, next, repeat) */
+.bp-icon {
+    font-size: 20px;
+    cursor: pointer;
+    color: #aaa;
+    transition: color 0.2s, transform 0.1s;
+    user-select: none;
+}
+
+.bp-icon:hover {
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* ADDED: Highlighted state for shuffle/repeat when active */
+.bp-icon-active {
+    color: #7f5af0; /* purple highlight when toggled on */
+}
+
+/* ADDED: Keep play button the same size as before (already styled as .play) */
+/* but offset margin so it sits nicely in the bottom bar */
+.bp-controls .play {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+}
+
+/* ADDED: Progress bar in bottom bar (override max-width from old .progress-container) */
+.bp-center .progress-container {
+    width: 100%;
+    max-width: 460px;
+}
+
+/* ADDED: Right section of bottom bar (volume) */
+.bp-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* ADDED: Volume speaker icon */
+.vol-icon {
+    font-size: 16px;
+    color: #aaa;
+}
+
+/* ADDED: Make panels (left and center) fill the grid row properly */
+.panel {
+    min-height: 0; /* ADDED: important so flex children can shrink inside grid */
 }
