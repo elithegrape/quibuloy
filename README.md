@@ -1,4 +1,4 @@
-# EL'coustic
+# El'coustic
 
 - Propject Description
   Music ni Anika is a Spotify-inspired web music player built using HTML, CSS, and JavaScript. The application allows users to browse songs, albums, artists, and favorites while providing an interactive music playback experience.
