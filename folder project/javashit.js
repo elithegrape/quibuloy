@@ -548,7 +548,7 @@ const playlists = {
             src: 'assets/songs/aljames/paumaga.mp3', 
             image: 'assets/image/al-james/paumaga.jpg',
             album: 'Pa Umaga',
-            genre: 'OPM'
+            genre: 'rock rap'
         },
         { 
             title: 'pwede ba', 
@@ -556,7 +556,7 @@ const playlists = {
             src: 'assets/songs/aljames/pwedeba.mp3', 
             image: 'assets/image/al-james/pwedeba.jpg',
             album: 'Pwede Ba',
-            genre: 'OPM'
+            genre: 'rock rap'
         },
         { 
             title: 'pahinga', 
@@ -564,7 +564,7 @@ const playlists = {
             src: 'assets/songs/aljames/pahinga.mp3', 
             image: 'assets/image/al-james/pahinga.jpg',
             album: 'Pahinga',
-            genre: 'OPM'
+            genre: 'rock rap'
         },
         { 
             title: 'repeat', 
@@ -572,7 +572,7 @@ const playlists = {
             src: 'assets/songs/aljames/repeat.mp3', 
             image: 'assets/image/al-james/repeat.jpg',
             album: 'Repeat',
-            genre: 'OPM'
+            genre: 'rock rap'
         }
     ],
     janroberts: [
@@ -810,8 +810,122 @@ nextbtn?.addEventListener('click', () => {
     }
 });
 
-// Initialize
-updateFavoritesPlaceholder();
+// GENRE MODAL FUNCTIONALITY
+const genreModal = document.getElementById('genre-modal');
+const genreCardsEl = genreModal?.querySelector('.genre-cards');
+const genreTrackListEl = genreModal?.querySelector('.genre-track-list');
+const genreCardsView = genreModal?.querySelector('.genre-cards-view');
+const genreTracksView = genreModal?.querySelector('.genre-tracks-view');
+const genreModalTitle = document.getElementById('genre-modal-title');
+const closeGenreBtn = document.getElementById('close-genre');
+const genreBackBtn = document.getElementById('genre-back-btn');
+
+// Genre color palette for cards
+const genreColors = [
+    'linear-gradient(135deg,#6a3de8,#3d5af1)',
+    'linear-gradient(135deg,#e8503d,#f1913d)',
+    'linear-gradient(135deg,#3db87a,#3dc8c0)',
+    'linear-gradient(135deg,#c83dd4,#5b3de8)',
+    'linear-gradient(135deg,#d4a23d,#d46f3d)',
+    'linear-gradient(135deg,#3d8fd4,#3dd4c8)',
+];
+
+function getGenreMap() {
+    const map = {};
+    allTracks.forEach(track => {
+        const g = track.genre || 'Unknown';
+        if (!map[g]) map[g] = [];
+        map[g].push(track);
+    });
+    return map;
+}
+
+function showGenreCards() {
+    if (!genreModal) return;
+    const genreMap = getGenreMap();
+    genreCardsEl.innerHTML = '';
+
+    Object.entries(genreMap).forEach(([genre, tracks], i) => {
+        const card = document.createElement('div');
+        card.className = 'genre-card';
+        card.style.background = genreColors[i % genreColors.length];
+        // Pick a representative image (first track)
+        const img = tracks[0]?.image || '';
+        card.innerHTML = `
+            <div class="genre-card-art" style="background-image:url('${img}')"></div>
+            <div class="genre-card-info">
+                <span class="genre-card-name">${genre}</span>
+                <span class="genre-card-count">${tracks.length} song${tracks.length !== 1 ? 's' : ''}</span>
+            </div>
+        `;
+        card.addEventListener('click', () => showGenreTracks(genre, tracks));
+        genreCardsEl.appendChild(card);
+    });
+
+    genreCardsView.classList.remove('hidden');
+    genreTracksView.classList.add('hidden');
+    genreBackBtn.classList.add('hidden');
+    genreModalTitle.textContent = 'Genres';
+    genreModal.classList.remove('hidden');
+}
+
+function showGenreTracks(genre, tracks) {
+    genreTrackListEl.innerHTML = '';
+
+    tracks.forEach((track) => {
+        const el = document.createElement('div');
+        el.className = 'playlist-item';
+        el.dataset.src = track.src;
+        el.innerHTML = `
+            <img src="${track.image}" alt="${track.title}">
+            <div class="meta">
+                <strong>${track.title}</strong>
+                <div style="font-size:12px;color:#999">${track.artist} · ${track.album}</div>
+            </div>
+            <span class="heart" title="Favorite this song">&#10084;</span>
+        `;
+        el.addEventListener('click', (e) => {
+            if (e.target.closest('.heart')) return;
+            const globalIdx = allTracks.findIndex(t => t.src === track.src);
+            playTrack(allTracks, globalIdx >= 0 ? globalIdx : 0);
+            closeGenreModal();
+        });
+        genreTrackListEl.appendChild(el);
+    });
+
+    genreCardsView.classList.add('hidden');
+    genreTracksView.classList.remove('hidden');
+    genreBackBtn.classList.remove('hidden');
+    genreModalTitle.textContent = `${genre}`;
+}
+
+function closeGenreModal() {
+    genreModal?.classList.add('hidden');
+}
+
+genreBackBtn?.addEventListener('click', () => {
+    genreCardsView.classList.remove('hidden');
+    genreTracksView.classList.add('hidden');
+    genreBackBtn.classList.add('hidden');
+    genreModalTitle.textContent = 'Genres';
+});
+
+closeGenreBtn?.addEventListener('click', closeGenreModal);
+genreModal?.addEventListener('click', (e) => {
+    if (e.target === genreModal) closeGenreModal();
+});
+
+// Hook into the filter tabs — override the Genre button behaviour
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    if (btn.dataset.filter === 'genre') {
+        btn.addEventListener('click', (e) => {
+            e.stopImmediatePropagation();
+            showGenreCards();
+        });
+    }
+});
+
+
 updateRecentPlaceholder();
 
 // Start with first track if available
@@ -830,7 +944,7 @@ if (allTracks.length > 0) {
     centerArtist.textContent = track.artist;
     centerAlbum.textContent = track.album;
     centerGenre.textContent = track.genre;
-    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
     playing = false;
     currentPlaylist = allTracks;
     currentTrackIndex = 0;
