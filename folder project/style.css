@@ -36,21 +36,6 @@ body {
     gap: 10px;
 }
 
-/* Home icon button */
-.home-icon {
-    width: 40px;
-    height: 40px;
-    background: #1a1a1a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background 0.2s;
-}
-.home-icon:hover { background: #2a2a2a; }
-
 /* Search bar */
 .topbar .search {
     flex: 1;
@@ -71,18 +56,6 @@ body {
     align-items: center;
 }
 
-/* User avatar */
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background: #333;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-}
 
 /* MAIN LAYOUT */
 .main {
@@ -493,46 +466,7 @@ body {
     flex-shrink: 0; /* ADDED: don't let topbar shrink */
 }
 
-/* ADDED: Left side of topbar (home icon) */
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
-/* ADDED: Home icon button style */
-.home-icon {
-    width: 40px;
-    height: 40px;
-    background: #1a1a1a;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background 0.2s;
-}
-.home-icon:hover { background: #2a2a2a; }
-
-/* ADDED: Right side of topbar (user avatar) */
-.topbar-right {
-    display: flex;
-    align-items: center;
-}
-
-/* ADDED: User avatar circle */
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    background: #333;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 18px;
-}
 
 /* ADDED: Override search to take up center space */
 .topbar .search {
