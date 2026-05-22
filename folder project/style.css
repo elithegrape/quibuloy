@@ -284,7 +284,7 @@ h2 {
     position: relative;
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #7f5af0, #5c7cfa);
+    background: linear-gradient(90deg, #fdfcff, #adb5d5);
     transition: width 0.1s linear;
 }
 
@@ -632,7 +632,7 @@ body {
 
 /* --- BOTTOM PLAYER BAR (ADDED: the persistent player at the bottom like Spotify) --- */
 .bottom-player {
-    height: 90px;
+    height: 110px;
     background: #111;
     border-top: 1px solid #222;
     display: flex;
