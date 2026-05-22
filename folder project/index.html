@@ -135,7 +135,7 @@
             <!-- Prev button (FIXED: Font Awesome) -->
             <div class="bp-icon" id="prevbutton"><i class="fas fa-backward"></i></div>
             <!-- Play/Pause button (FIXED: Font Awesome) -->
-            <div class="play" id="playBtn"><i class="fas fa-pause"></i></div>
+            <div class="play" id="playBtn"><i class="fas fa-play"></i></div>
             <!-- Next button (FIXED: Font Awesome) -->
             <div class="bp-icon" id="nextbutton"><i class="fas fa-forward"></i></div>
             <!-- FIXED: Repeat button (Font Awesome) -->
@@ -180,6 +180,25 @@
         <button id="close-playlist" class="close-btn">✕</button>
         <h2 id="playlist-title">Playlist</h2>
         <div class="playlist-items"></div>
+    </div>
+</div>
+
+<!-- GENRE MODAL -->
+<div id="genre-modal" class="modal hidden">
+    <div class="modal-content genre-modal-content">
+        <div class="genre-modal-header">
+            <button id="genre-back-btn" class="genre-back-btn hidden"><i class="fas fa-arrow-left"></i></button>
+            <h2 id="genre-modal-title">Genres</h2>
+            <button id="close-genre" class="close-btn">✕</button>
+        </div>
+        <!-- Screen 1: Genre cards -->
+        <div class="genre-cards-view">
+            <div class="genre-cards"></div>
+        </div>
+        <!-- Screen 2: Track list for selected genre -->
+        <div class="genre-tracks-view hidden">
+            <div class="genre-track-list"></div>
+        </div>
     </div>
 </div>
 
