@@ -44,5 +44,5 @@
   - **Shuffle and repeat as stateful toggles**
   Both buttons highlight in purple when active, giving a persistent visual indicator of the current playback mode — critical for avoiding user confusion about why   tracks are playing in unexpected orders.
 
-design documentation: https://github.com/elithegrape/quibuloy/blob/main/Design%20System%20Documentation-%20El'acoustic.docx
+design documentation: https://1drv.ms/w/c/40e8a4bc763cc5b1/IQAZHC5qIUY8Q5rh3vWXfOz_AbwOmOLQH0x5x3DEuBjUHXw?e=b3sDku
 
