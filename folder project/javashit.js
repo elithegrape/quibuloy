@@ -75,7 +75,7 @@ function updateRecentPlaceholder() {
 
 function addRecentSong() {
     if (!recentList || !playerTitle) return;
-
+ 
     const title = playerTitle.textContent.trim();
     if (!title) return;
 
@@ -528,7 +528,7 @@ const playlists = {
             title: 'Isang pangako', 
             artist: 'Fitterkarma', 
             src: 'assets/songs/fitterkarma/pangako.mp3', 
-            image: 'assets/image/fitterkarma/pangako.jpg',
+            image: 'assets/image/fitterkarma/isang pangako.jpg',
             album: 'Pangako',
             genre: 'OPM'
         }
@@ -816,5 +816,22 @@ updateRecentPlaceholder();
 
 // Start with first track if available
 if (allTracks.length > 0) {
-    playTrack(allTracks, 0);
+    const track = allTracks[0];
+    audio.src = track.src;
+    audio.dataset.currentSrc = track.src;
+    audio.load();
+    playerTitle.textContent = track.title;
+    playerArtist.textContent = track.artist;
+    playerImage.src = track.image;
+    bpTitle.textContent = track.title;
+    bpArtist.textContent = track.artist;
+    bpThumb.src = track.image;
+    centerTitle.textContent = track.title;
+    centerArtist.textContent = track.artist;
+    centerAlbum.textContent = track.album;
+    centerGenre.textContent = track.genre;
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    playing = false;
+    currentPlaylist = allTracks;
+    currentTrackIndex = 0;
 }
