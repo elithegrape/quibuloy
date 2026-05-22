@@ -949,3 +949,34 @@ if (allTracks.length > 0) {
     currentPlaylist = allTracks;
     currentTrackIndex = 0;
 }
+
+// Populate the All Songs list in the sidebar
+(function populateAllSongsList() {
+    const container = document.querySelector('.all-songs-list');
+    if (!container) return;
+
+    allTracks.forEach((track, idx) => {
+        const el = document.createElement('div');
+        el.className = 'song';
+        el.dataset.trackSrc = track.src;
+        el.dataset.trackTitle = track.title;
+        el.dataset.trackArtist = track.artist;
+        el.dataset.trackImage = track.image;
+        el.innerHTML = `
+            <img src="${track.image}" alt="${track.title}">
+            <div class="song-info">
+                <h3>${track.title}</h3>
+                <p>${track.artist}</p>
+            </div>
+            <span class="heart" title="Add to favorites">&#10084;</span>
+        `;
+        el.addEventListener('click', (e) => {
+            if (e.target.closest('.heart')) return;
+            playTrack(allTracks, idx);
+        });
+        container.appendChild(el);
+    });
+
+    // Songs tab is active by default — hide playlist cards, show songs list
+    document.querySelectorAll('.left-sidebar .song[data-playlist]').forEach(el => el.style.display = 'none');
+})();
