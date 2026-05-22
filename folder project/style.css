@@ -710,7 +710,7 @@ body {
 
 /* ADDED: Highlighted state for shuffle/repeat when active */
 .bp-icon-active {
-    color: #7f5af0; /* purple highlight when toggled on */
+    color: #8d5cea; /* purple highlight when toggled on */
 }
 
 /* ADDED: Keep play button the same size as before (already styled as .play) */
