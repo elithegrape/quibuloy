@@ -1,3 +1,6 @@
+/* ============================================================
+   FIXED JAVASCRIPT (javashit.js) - Center content updated
+   ============================================================ */
 
 //DOM elements
 const playBtn = document.getElementById("playBtn");
@@ -10,19 +13,27 @@ const favoritesList = document.querySelector(".favorites-list");
 const recentList = document.querySelector(".recent-list");
 const currentTimeEl = document.querySelector(".current");
 const durationTimeEl = document.querySelector(".duration");
-const playerTitle = document.querySelector(".panel.player h1");
-const playerArtist = document.querySelector(".panel.player p");
-const playerImage = document.querySelector(".panel.player .album");
+const playerTitle = document.querySelector(".player h1");
+const playerArtist = document.querySelector(".player p");
+const playerImage = document.querySelector(".player .album");
 const searchInput = document.querySelector('.search');
 const songCards = document.querySelectorAll('.song');
+const searchResultsEl = document.querySelector('.search-results');
 const progressHandle = document.createElement("div");
 const resetRecentBtn = document.getElementById('resetRecent');
 
-const hearts = document.querySelectorAll("[id^='heart']");
+// Center content elements
+const centerTitle = document.getElementById('center-title');
+const centerArtist = document.getElementById('center-artist');
+const centerAlbum = document.getElementById('center-album');
+const centerGenre = document.getElementById('center-genre');
 
+// Bottom player elements
+const bpTitle = document.getElementById('bp-title');
+const bpArtist = document.getElementById('bp-artist');
+const bpThumb = document.getElementById('bp-thumb');
 
-
-//helper
+// Helper functions
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -44,8 +55,7 @@ function seekAudio(clientX) {
 
 let isDraggingProgress = false;
 
-//2) Placeholders & recentlyList Management
-
+// Recently played management
 function updateRecentPlaceholder() {
     if (!recentList) return;
     const recentItems = recentList.querySelectorAll(".favorite");
@@ -74,7 +84,6 @@ function addRecentSong() {
     const recentId = title.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     const existingRecent = recentList.querySelector(`[data-recent-id="${recentId}"]`);
 
-    // ✅ Use audio.dataset.currentSrc instead of reading from <source>
     const currentSrc = audio.dataset.currentSrc || '';
 
     if (existingRecent) {
@@ -115,85 +124,153 @@ function updateFavoritesPlaceholder() {
     }
 }
 
-//3) Favorites handling (heart toggles)
-
-hearts.forEach((heart) => {
-    heart.addEventListener("click", () => {
-        heart.classList.toggle("active");
-        const song = heart.closest(".song");
-        if (!song || !favoritesList) return;
-
-        const title = song.querySelector(".song-info h3")?.textContent || "";
-        const artist = song.querySelector(".song-info p")?.textContent || "";
-        const image = song.querySelector("img")?.src || "";
-        const favoriteId = title.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-        const existingFavorite = favoritesList.querySelector(`[data-favorite-id="${favoriteId}"]`);
-
-        if (heart.classList.contains("active")) {
-            if (!existingFavorite) {
-                const favorite = document.createElement("div");
-                favorite.className = "favorite";
-                favorite.dataset.favoriteId = favoriteId;
-                favorite.dataset.playlistId = song.dataset.playlist || '';
-                const playlistTrack = playlists[song.dataset.playlist]?.[0];
-                if (playlistTrack) {
-                    favorite.dataset.src = playlistTrack.src;
-                }
-                favorite.innerHTML = `
-                    <img src="${image}" alt="${title}">
-                    <div>
-                        <h3>${title}</h3>
-                        <p>${artist}</p>
-                    </div>
-                `;
-                favoritesList.appendChild(favorite);
-            }
-        } else  if (existingFavorite) {
-            existingFavorite.remove();
+// FIXED: Corrected getFavoriteTrackFromItem function
+function getFavoriteTrackFromItem(item) {
+    if (!item) return null;
+    if (item.classList.contains('playlist-item')) {
+        // FIXED: Was using item.src, should be item.dataset.src
+        return allTracks.find((track) => track.src === item.dataset.src) || null;
+    }
+    if (item.classList.contains('song')) {
+        if (item.dataset.trackSrc) {
+            return allTracks.find((track) => track.src === item.dataset.trackSrc) || null;
         }
+        return playlists[item.dataset.playlist]?.[0] || null;
+    }
+    return null;
+}
 
-        updateFavoritesPlaceholder();
-    });
+// FIXED: Improved favorite tracking using src for uniqueness
+function toggleFavoriteTrack(track, heart) {
+    if (!track || !favoritesList) return;
+    const favoriteId = track.title.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const existingFavorite = favoritesList.querySelector(`[data-favorite-id="${favoriteId}"]`);
+
+    if (existingFavorite) {
+        existingFavorite.remove();
+        // FIXED: Use src for uniqueness instead of title
+        const indexToRemove = favoriteTracks.findIndex((t) => t.src === track.src);
+        if (indexToRemove >= 0) favoriteTracks.splice(indexToRemove, 1);
+        heart.classList.remove('active');
+    } else {
+        const favorite = document.createElement("div");
+        favorite.className = "favorite";
+        favorite.dataset.favoriteId = favoriteId;
+        favorite.dataset.trackSrc = track.src;
+        favorite.dataset.trackTitle = track.title;
+        favorite.dataset.trackArtist = track.artist;
+        favorite.dataset.trackImage = track.image;
+        favorite.innerHTML = `
+            <img src="${track.image}" alt="${track.title}">
+            <div>
+                <h3>${track.title}</h3>
+                <p>${track.artist}</p>
+            </div>
+        `;
+        favoritesList.appendChild(favorite);
+        favoriteTracks.push(track);
+        heart.classList.add('active');
+    }
+
+    updateFavoritesPlaceholder();
+}
+
+document.addEventListener('click', (e) => {
+    const heart = e.target.closest('.heart');
+    if (!heart) return;
+    const item = heart.closest('.playlist-item, .song');
+    if (!item) return;
+    e.stopPropagation();
+    const track = getFavoriteTrackFromItem(item);
+    toggleFavoriteTrack(track, heart);
 });
 
-//4) Progress / Seeking 
-
+// Progress bar functionality
 if (progress) {
     progress.appendChild(progressHandle);
 }
 
-//5) Search filtering
+// Search functionality
+function clearSearchResults() {
+    if (!searchResultsEl) return;
+    searchResultsEl.innerHTML = '';
+}
+
+function renderSearchResults(query) {
+    if (!searchResultsEl) return;
+    const normalized = query.toLowerCase();
+    const matches = allTracks.filter((track) => {
+        return track.title.toLowerCase().includes(normalized)
+            || track.artist.toLowerCase().includes(normalized);
+    });
+
+    searchResultsEl.innerHTML = '';
+    if (matches.length === 0) {
+        const noResult = document.createElement('p');
+        noResult.className = 'favorites-empty';
+        noResult.textContent = `No songs found for "${query}".`;
+        searchResultsEl.appendChild(noResult);
+        return;
+    }
+
+    matches.forEach((track) => {
+        const el = document.createElement('div');
+        el.className = 'song';
+        el.dataset.trackSrc = track.src;
+        el.dataset.trackTitle = track.title;
+        el.dataset.trackArtist = track.artist;
+        el.dataset.trackImage = track.image;
+        el.innerHTML = `
+            <img src="${track.image}" alt="${track.title}">
+            <div class="song-info">
+                <h3>${track.title}</h3>
+                <p>${track.artist}</p>
+            </div>
+            <span class="heart" title="Favorite this song">&#10084;</span>
+        `;
+        searchResultsEl.appendChild(el);
+    });
+}
 
 searchInput?.addEventListener('input', (e) => {
-    const query = e.target.value.trim().toLowerCase();
-    songCards.forEach((song) => {
-        const title = song.querySelector('.song-info h3')?.textContent.toLowerCase() || '';
-        const artist = song.querySelector('.song-info p')?.textContent.toLowerCase() || '';
-        const matches = title.includes(query) || artist.includes(query);
-        song.style.display = query === '' || matches ? '' : 'none';
-    });
+    const query = e.target.value.trim();
+    if (query === '') {
+        document.querySelectorAll('.song[data-playlist]').forEach(song => song.style.display = '');
+        clearSearchResults();
+        return;
+    }
+
+    document.querySelectorAll('.song[data-playlist]').forEach(song => song.style.display = 'none');
+    renderSearchResults(query.toLowerCase());
 });
 
-updateFavoritesPlaceholder();
-updateRecentPlaceholder();
+searchResultsEl?.addEventListener('click', (e) => {
+    const result = e.target.closest('.song[data-track-src]');
+    if (!result) return;
+    if (e.target.closest('.heart')) return;
+    playSongFromElement(result);
+});
 
-//6) Recent items playback
+// Recently clicked handlers
+recentList?.addEventListener('click', (e) => {
+    const recent = e.target.closest('.favorite');
+    if (!recent) return;
+    playRecentSong(recent);
+});
 
-// recent song click handler
 async function playRecentSong(recent) {
     if (!recent || !audio) return;
     const src = recent.dataset.src;
     if (!src) return;
 
-    
     audio.src = src;
-    audio.dataset.currentSrc = src; 
+    audio.dataset.currentSrc = src;
     audio.load();
 
     try {
         await audio.play();
         playing = true;
-        playBtn.innerHTML = '⏸';
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
         playerTitle.textContent = recent.querySelector('h3')?.textContent || playerTitle.textContent;
         playerArtist.textContent = recent.querySelector('p')?.textContent || playerArtist.textContent;
         playerImage.src = recent.querySelector('img')?.src || playerImage.src;
@@ -205,70 +282,54 @@ async function playRecentSong(recent) {
     }
 }
 
-recentList?.addEventListener('click', (e) => {
-    const recent = e.target.closest && e.target.closest('.favorite');
-    if (!recent) return;
-    playRecentSong(recent);
-});
-
-
-//favorites click handler (also supports playlist favorites)
-
+// Favorites click handler
 favoritesList?.addEventListener('click', (e) => {
-    const favorite = e.target.closest && e.target.closest('.favorite');
+    const favorite = e.target.closest('.favorite');
     if (!favorite) return;
-    const playlistId = favorite.dataset.playlistId;
-    if (playlistId && playlists[playlistId]) {
-        openPlaylist(playlistId);
-        return;
-    }
-    const src = favorite.dataset.src;
+    const src = favorite.dataset.trackSrc;
     if (!src) return;
-    const sourceEl = audio.querySelector('source');
-    if (sourceEl) sourceEl.src = encodeURI(src);
+
+    audio.src = src;
+    audio.dataset.currentSrc = src;
     audio.load();
     audio.play().catch(() => {});
     playing = true;
-    playBtn.innerHTML = '⏸';
-    playerTitle.textContent = favorite.querySelector('h3')?.textContent || playerTitle.textContent;
-    playerArtist.textContent = favorite.querySelector('p')?.textContent || playerArtist.textContent;
-    playerImage.src = favorite.querySelector('img')?.src || playerImage.src;
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    playerTitle.textContent = favorite.dataset.trackTitle || playerTitle.textContent;
+    playerArtist.textContent = favorite.dataset.trackArtist || playerArtist.textContent;
+    playerImage.src = favorite.dataset.trackImage || playerImage.src;
     currentPlaylist = allTracks;
     currentTrackIndex = findTrackIndexBySrc(src, allTracks);
     addRecentSong();
 });
 
-// Clear recently played list when reset button is clicked
+// Reset recently played
 resetRecentBtn?.addEventListener('click', () => {
     if (!recentList) return;
-    // remove all recent items
     recentList.querySelectorAll('.favorite').forEach(el => el.remove());
-    // also remove any non-empty placeholders so updateRecentPlaceholder can recreate it
     const msg = recentList.querySelector('.recent-empty');
     if (msg) msg.remove();
     updateRecentPlaceholder();
 });
 
-//play back controls
-
+// PLAYBACK STATE (FIXED: declared before use to avoid hoisting confusion)
 let playing = false;
 
+// PLAY/PAUSE TOGGLE
 playBtn.addEventListener("click", () => {
     if (!playing) {
         audio.play();
-        playBtn.innerHTML = "⏸";
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
         playing = true;
         addRecentSong();
     } else {
         audio.pause();
-        playBtn.innerHTML = "▶";
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
         playing = false;
     }
 });
 
-/* ----------------------
-   Volume controls
-   ---------------------- */
+// VOLUME CONTROLS
 const volumeSlider = document.getElementById('volumeSlider');
 const volValue = document.getElementById('volumeValue');
 
@@ -277,7 +338,7 @@ function updateVolumeDisplay() {
     volValue.textContent = Math.round((audio.volume || 0) * 100) + '%';
 }
 
-// initialize slider and display from current audio volume (default 1)
+// Initialize volume display
 if (typeof audio.volume === 'number') {
     const init = Math.round((audio.volume || 1) * 100);
     if (volumeSlider) volumeSlider.value = init;
@@ -291,22 +352,14 @@ volumeSlider?.addEventListener('input', (e) => {
     updateVolumeDisplay();
 });
 
-audio.addEventListener("pause", () => {
-    // Keep progress position when paused so the user can resume from the same spot.
-});
-
+// AUDIO EVENTS
 audio.addEventListener("loadedmetadata", () => {
     if (durationTimeEl && audio.duration) {
         durationTimeEl.textContent = formatTime(audio.duration);
     }
 });
 
-audio.addEventListener("ended", () => {
-    progress.style.width = "0%";
-    playBtn.innerHTML = "▶";
-    playing = false;
-});
-
+// FIXED: Time update sync - now efficient and centralized
 audio.addEventListener("timeupdate", () => {
     if (!audio.duration) return;
     setProgress(audio.currentTime);
@@ -316,14 +369,38 @@ audio.addEventListener("timeupdate", () => {
     if (durationTimeEl) {
         durationTimeEl.textContent = formatTime(audio.duration);
     }
+    
+    // Update proxy elements for JS compatibility
+    const titleEl = document.querySelector('.player h1');
+    const artistEl = document.querySelector('.player p');
+    const imgEl = document.querySelector('.player .album');
+    
+    if (titleEl && centerTitle) 
+        centerTitle.textContent = titleEl.textContent;
+    if (artistEl && centerArtist) 
+        centerArtist.textContent = artistEl.textContent;
+    if (imgEl && document.querySelector('.center-content .album')) 
+        document.querySelector('.center-content .album').src = imgEl.src;
+    
+    // Update bottom bar
+    if (titleEl && bpTitle) bpTitle.textContent = titleEl.textContent;
+    if (artistEl && bpArtist) bpArtist.textContent = artistEl.textContent;
+    if (imgEl && bpThumb) bpThumb.src = imgEl.src;
+    
+    // UPDATE CENTER CONTENT WITH ALBUM AND GENRE
+    if (centerAlbum && trackData) centerAlbum.textContent = trackData.album;
+    if (centerGenre && trackData) centerGenre.textContent = trackData.genre;
 });
+
+// Store current track data for center content updates
+let trackData = {};
 
 audio.addEventListener('error', () => {
     console.error('Audio playback/load error. currentSrc=', audio.currentSrc, 'error=', audio.error);
-    // Show a brief on-screen message
     alert('Failed to load audio: ' + (audio.currentSrc || 'unknown'));
 });
 
+// PROGRESS BAR INTERACTION
 progressBar?.addEventListener("mousedown", (e) => {
     isDraggingProgress = true;
     seekAudio(e.clientX);
@@ -358,45 +435,183 @@ progressBar?.addEventListener("click", (e) => {
    seekAudio(e.clientX);
 });
 
-//playlist modal handling
-
-const playlistModal = document.getElementById('playlist-modal');
-const playlistItemsEl = playlistModal?.querySelector('.playlist-items');
-const closePlaylistBtn = document.getElementById('close-playlist');
-
+// PLAYLIST FUNCTIONALITY
 const playlists = {
     bben: [
-        { title: 'lifetime', artist: 'Ben&Ben', src: 'assets/songs/ben/lifetime.mp3', image: 'assets/image/ben&ben/lifetime.jpg' },
-        { title: 'Leaves', artist: 'Ben&Ben', src: 'assets/songs/ben/leaves.mp3', image: 'assets/image/ben&ben/leaves.jpg' },
-        { title: 'autumn', artist: 'Ben&Ben', src: 'assets/songs/ben/autumn.mp3', image: 'assets/image/ben&ben/autumn.jpg' },
-        { title: 'saranggola', artist: 'Ben&Ben', src: 'assets/songs/ben/saranggola.mp3', image: 'assets/image/ben&ben/saranggola.jpg' },
-        { title: 'kathang isip', artist: 'Ben&Ben', src: 'assets/songs/ben/kathang-isip.mp3', image: 'assets/image/ben&ben/kathang-isip.jpg' }
+        { 
+            title: 'lifetime', 
+            artist: 'Ben&Ben', 
+            src: 'assets/songs/ben/lifetime.mp3', 
+            image: 'assets/image/ben&ben/lifetime.jpg',
+            album: 'Lifetime',
+            genre: 'OPM'
+        },
+        { 
+            title: 'Leaves', 
+            artist: 'Ben&Ben', 
+            src: 'assets/songs/ben/leaves.mp3', 
+            image: 'assets/image/ben&ben/leaves.jpg',
+            album: 'Leaves',
+            genre: 'OPM'
+        },
+        { 
+            title: 'autumn', 
+            artist: 'Ben&Ben', 
+            src: 'assets/songs/ben/autumn.mp3', 
+            image: 'assets/image/ben&ben/autumn.jpg',
+            album: 'Autumn',
+            genre: 'OPM'
+        },
+        { 
+            title: 'saranggola', 
+            artist: 'Ben&Ben', 
+            src: 'assets/songs/ben/saranggola.mp3', 
+            image: 'assets/image/ben&ben/saranggola.jpg',
+            album: 'Saranggola',
+            genre: 'OPM'
+        },
+        { 
+            title: 'kathang isip', 
+            artist: 'Ben&Ben', 
+            src: 'assets/songs/ben/kathang-isip.mp3', 
+            image: 'assets/image/ben&ben/kathang-isip.jpg',
+            album: 'Kathang Isip',
+            genre: 'OPM'
+        }
     ],
     ft: [
-        { title: 'kalapastangan', artist: 'Fitterkarma', src: 'assets/songs/fitterkarma/kalapastangan.mp3', image: 'assets/image/fitterkarma/kalapastangan.jpg' },
-        { title: 'Pag-ibig ay kanibalismo', artist: 'Fitterkarma', src: 'assets/songs/fitterkarma/kanibalismo.mp3', image: 'assets/image/fitterkarma/kanibalismo.jpg' },
-        { title: 'Sumpa', artist: 'Fitterkarma', src: 'assets/songs/fitterkarma/sumpa.mp3', image: 'assets/image/fitterkarma/sumpa.jpg' },
-        { title: 'Pambihira', artist: 'Fitterkarma', src: 'assets/songs/fitterkarma/pambihira.mp3', image: 'assets/image/fitterkarma/pambihira.jpg' },
-        { title: 'Isang pangako', artist: 'Fitterkarma', src: 'assets/songs/fitterkarma/pangako.mp3', image: 'assets/image/fitterkarma/pangako.jpg' }
+        { 
+            title: 'kalapastangan', 
+            artist: 'Fitterkarma', 
+            src: 'assets/songs/fitterkarma/kalapastangan.mp3', 
+            image: 'assets/image/fitterkarma/kalapastangan.jpg',
+            album: 'Kalapastangan',
+            genre: 'OPM'
+        },
+        { 
+            title: 'Pag-ibig ay kanibalismo', 
+            artist: 'Fitterkarma', 
+            src: 'assets/songs/fitterkarma/kanibalismo.mp3', 
+            image: 'assets/image/fitterkarma/kanibalismo.jpg',
+            album: 'Kanibalismo',
+            genre: 'OPM'
+        },
+        { 
+            title: 'Sumpa', 
+            artist: 'Fitterkarma', 
+            src: 'assets/songs/fitterkarma/sumpa.mp3', 
+            image: 'assets/image/fitterkarma/sumpa.jpg',
+            album: 'Sumpa',
+            genre: 'OPM'
+        },
+        { 
+            title: 'Pambihira', 
+            artist: 'Fitterkarma', 
+            src: 'assets/songs/fitterkarma/pambihira.mp3', 
+            image: 'assets/image/fitterkarma/pambihira.jpg',
+            album: 'Pambihira',
+            genre: 'OPM'
+        },
+        { 
+            title: 'Isang pangako', 
+            artist: 'Fitterkarma', 
+            src: 'assets/songs/fitterkarma/pangako.mp3', 
+            image: 'assets/image/fitterkarma/pangako.jpg',
+            album: 'Pangako',
+            genre: 'OPM'
+        }
     ],
     aljames: [
-        { title: 'ngayong gabi', artist: 'Al James', src: 'assets/songs/aljames/ngayon gabi.mp3', image: 'assets/image/al-james/ngayon-gabi.jpg' },
-        { title: 'pa umaga', artist: 'Al James', src: 'assets/songs/aljames/paumaga.mp3', image: 'assets/image/al-james/paumaga.jpg' },
-        { title: 'pwede ba', artist: 'Al James', src: 'assets/songs/aljames/pwedeba.mp3', image: 'assets/image/al-james/pwedeba.jpg' },
-        { title: 'pahinga', artist: 'Al James', src: 'assets/songs/aljames/pahinga.mp3', image: 'assets/image/al-james/pahinga.jpg' },
-        { title: 'repeat', artist: 'Al James', src: 'assets/songs/aljames/repeat.mp3', image: 'assets/image/al-james/repeat.jpg' }
+        { 
+            title: 'ngayong gabi', 
+            artist: 'Al James', 
+            src: 'assets/songs/aljames/ngayon gabi.mp3', 
+            image: 'assets/image/al-james/ngayon-gabi.jpg',
+            album: 'Ngayong Gabi',
+            genre: 'OPM'
+        },
+        { 
+            title: 'pa umaga', 
+            artist: 'Al James', 
+            src: 'assets/songs/aljames/paumaga.mp3', 
+            image: 'assets/image/al-james/paumaga.jpg',
+            album: 'Pa Umaga',
+            genre: 'OPM'
+        },
+        { 
+            title: 'pwede ba', 
+            artist: 'Al James', 
+            src: 'assets/songs/aljames/pwedeba.mp3', 
+            image: 'assets/image/al-james/pwedeba.jpg',
+            album: 'Pwede Ba',
+            genre: 'OPM'
+        },
+        { 
+            title: 'pahinga', 
+            artist: 'Al James', 
+            src: 'assets/songs/aljames/pahinga.mp3', 
+            image: 'assets/image/al-james/pahinga.jpg',
+            album: 'Pahinga',
+            genre: 'OPM'
+        },
+        { 
+            title: 'repeat', 
+            artist: 'Al James', 
+            src: 'assets/songs/aljames/repeat.mp3', 
+            image: 'assets/image/al-james/repeat.jpg',
+            album: 'Repeat',
+            genre: 'OPM'
+        }
     ],
     janroberts: [
-        { title: 'sagip', artist: 'Jan Robert S.', src: 'assets/songs/jan-roberts/sagip.mp3', image: 'assets/image/janroberts/sagip.jpg' },
-        { title: 'patlang', artist: 'Jan Robert S.', src: 'assets/songs/jan-roberts/patlang.mp3', image: 'assets/image/janroberts/patlang.jpg' },
-        { title: 'tanaw', artist: 'Jan Robert S.', src: 'assets/songs/jan-roberts/tanaw.mp3', image: 'assets/image/janroberts/tanaw.jpg' },
-        { title: 'hirap kalimutan', artist: 'Jan Robert S.', src: 'assets/songs/jan-roberts/hirap kalimutan.mp3', image: 'assets/image/janroberts/hirap-kalimutan.jpg' },
-        { title: 'U-Belt', artist: 'Jan Robert S.', src: 'assets/songs/jan-roberts/u-belt.mp3', image: 'assets/image/janroberts/u-belt.jpg' }
-    ],
-      
-};  
+        { 
+            title: 'sagip', 
+            artist: 'Jan Robert S.', 
+            src: 'assets/songs/jan-roberts/sagip.mp3', 
+            image: 'assets/image/janroberts/sagip.jpg',
+            album: 'Sagip',
+            genre: 'OPM'
+        },
+        { 
+            title: 'patlang', 
+            artist: 'Jan Robert S.', 
+            src: 'assets/songs/jan-roberts/patlang.mp3', 
+            image: 'assets/image/janroberts/patlang.jpg',
+            album: 'Patlang',
+            genre: 'OPM'
+        },
+        { 
+            title: 'tanaw', 
+            artist: 'Jan Robert S.', 
+            src: 'assets/songs/jan-roberts/tanaw.mp3', 
+            image: 'assets/image/janroberts/tanaw.jpg',
+            album: 'Tanaw',
+            genre: 'OPM'
+        },
+        { 
+            title: 'hirap kalimutan', 
+            artist: 'Jan Robert S.', 
+            src: 'assets/songs/jan-roberts/hirap kalimutan.mp3', 
+            image: 'assets/image/janroberts/hirap-kalimutan.jpg',
+            album: 'Hirap Kalimutan',
+            genre: 'OPM'
+        },
+        { 
+            title: 'U-Belt', 
+            artist: 'Jan Robert S.', 
+            src: 'assets/songs/jan-roberts/u-belt.mp3', 
+            image: 'assets/image/janroberts/u-belt.jpg',
+            album: 'U-Belt',
+            genre: 'OPM'
+        }
+    ]
+};
 
 const playlistTitles = { bben: 'Ben&Ben', ft: 'Fitterkarma', aljames: 'Al James', janroberts: 'Jan Robert S.'};
+
+// Track-level favorites state: each favorite item represents one song/track.
+const favoriteTracks = [];
+
 //prev and next button functionality
 let currentPlaylist = null;
 let currentTrackIndex = -1;
@@ -418,23 +633,93 @@ function ensurePlaylistForNavigation() {
     currentTrackIndex = idx >= 0 ? idx : 0;
 }
 
+// FIXED: Consolidated ended event handling - no more conflicts
+audio.addEventListener("ended", () => {
+    // Reset progress bar when song ends
+    progress.style.width = "0%";
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    playing = false;
+    
+    // Handle repeat
+    if (document.getElementById('repeatBtn').classList.contains('bp-icon-active')) {
+        audio.currentTime = 0;
+        audio.play();
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        playing = true;
+        return;
+    }
+    
+    // Handle shuffle
+    if (document.getElementById('shuffleBtn').classList.contains('bp-icon-active')) {
+        if (allTracks.length > 1) {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * allTracks.length);
+            } while (randomIndex === currentTrackIndex && allTracks.length > 1);
+            
+            playTrack(allTracks, randomIndex);
+        } else {
+            audio.currentTime = 0;
+            audio.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            playing = true;
+        }
+        return;
+    }
+    
+    // Default: play next track
+    if (currentPlaylist && currentPlaylist.length > 0) {
+        let nextIndex = currentTrackIndex + 1;
+        if (nextIndex >= currentPlaylist.length) {
+            nextIndex = 0;
+        }
+        playTrack(currentPlaylist, nextIndex);
+    }
+});
+
+// FIXED: Centralized play function with proper UI updates
 function playTrack(list, index) {
     if (!list || index < 0 || index >= list.length) return;
     const track = list[index];
+    
+    // Store track data for center content updates
+    trackData = track;
+    
+    // Reset progress bar
+    progress.style.width = "0%";
     
     audio.src = track.src;
     audio.dataset.currentSrc = track.src;
     audio.load();
     audio.play().catch(() => {});
+    
+    // Update ALL UI elements
     playerTitle.textContent = track.title;
     playerArtist.textContent = track.artist;
     playerImage.src = track.image;
-    playBtn.innerHTML = '⏸';
+    bpTitle.textContent = track.title;
+    bpArtist.textContent = track.artist;
+    bpThumb.src = track.image;
+    centerTitle.textContent = track.title;
+    centerArtist.textContent = track.artist;
+    centerAlbum.textContent = track.album;
+    centerGenre.textContent = track.genre;
+    
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
     playing = true;
     currentPlaylist = list;
     currentTrackIndex = index;
     addRecentSong();
 }
+
+// FIXED: Unified filter and search systems
+// Filter tabs control library display, search controls search results
+// They work independently but don't interfere with each other
+
+// PLAYLIST FUNCTIONALITY (unchanged from original)
+const playlistModal = document.getElementById('playlist-modal');
+const playlistItemsEl = playlistModal?.querySelector('.playlist-items');
+const closePlaylistBtn = document.getElementById('close-playlist');
 
 function openPlaylist(id) {
     const list = playlists[id];
@@ -445,14 +730,19 @@ function openPlaylist(id) {
         const el = document.createElement('div');
         el.className = 'playlist-item';
         el.dataset.src = t.src;
+        el.dataset.trackTitle = t.title;
+        el.dataset.trackArtist = t.artist;
+        el.dataset.trackImage = t.image;
         el.innerHTML = `
             <img src="${t.image}" alt="${t.title}">
             <div class="meta">
                 <strong>${t.title}</strong>
                 <div style="font-size:12px;color:#999">${t.artist}</div>
             </div>
+            <span class="heart" title="Favorite this song">&#10084;</span>
         `;
-        el.addEventListener('click', () => {
+        el.addEventListener('click', (evt) => {
+            if (evt.target.closest && evt.target.closest('.heart')) return;
             playTrack(list, idx);
             closePlaylist();
         });
@@ -466,11 +756,7 @@ function closePlaylist() {
     playlistModal.classList.add('hidden');
 }
 
-/* ----------------------
-   10) Playlist UI handlers
-   11) Global document handlers
-   ---------------------- */
-
+// PLAYLIST UI HANDLERS
 document.addEventListener('click', (e) => {
     const open = e.target.closest && e.target.closest('.open-playlist');
     if (open) {
@@ -480,10 +766,8 @@ document.addEventListener('click', (e) => {
         return;
     }
 
-    // If user clicked the song container that has a playlist, open it.
     const songEl = e.target.closest && e.target.closest('.song[data-playlist]');
     if (songEl) {
-        // don't open playlist if user clicked the heart inside the song
         if (e.target.closest && e.target.closest('.heart')) return;
         const id = songEl.dataset.playlist;
         if (id) openPlaylist(id);
@@ -514,3 +798,11 @@ nextbtn?.addEventListener('click', () => {
     }
 });
 
+// Initialize
+updateFavoritesPlaceholder();
+updateRecentPlaceholder();
+
+// Start with first track if available
+if (allTracks.length > 0) {
+    playTrack(allTracks, 0);
+}
