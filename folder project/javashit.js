@@ -802,7 +802,25 @@ nextbtn?.addEventListener('click', () => {
 updateFavoritesPlaceholder();
 updateRecentPlaceholder();
 
-// Start with first track if available
+// Load first track on page load without autoplaying (browsers block autoplay anyway)
 if (allTracks.length > 0) {
-    playTrack(allTracks, 0);
+    const track = allTracks[0];
+    audio.src = track.src;
+    audio.dataset.currentSrc = track.src;
+    audio.load();
+    playerTitle.textContent = track.title;
+    playerArtist.textContent = track.artist;
+    playerImage.src = track.image;
+    bpTitle.textContent = track.title;
+    bpArtist.textContent = track.artist;
+    bpThumb.src = track.image;
+    centerTitle.textContent = track.title;
+    centerArtist.textContent = track.artist;
+    centerAlbum.textContent = track.album;
+    centerGenre.textContent = track.genre;
+    // Keep play icon (not pause) since nothing is playing yet
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    playing = false;
+    currentPlaylist = allTracks;
+    currentTrackIndex = 0;
 }
